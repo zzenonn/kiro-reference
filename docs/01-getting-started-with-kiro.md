@@ -6,9 +6,6 @@ Python backend, and ending with Kiro building a playable canvas game in one shot
 the app; it's learning where the buttons are and seeing that Kiro handles both trivial and
 genuinely complex work, across more than one language.*
 
-> Why HTML5? It runs anywhere — just **open the file in your browser** (double-click it, or
-> right-click → open). No build step, no runtime to install, and you get something you can *see*.
-
 > 📚 **Official companion:** this session follows the shape of Kiro's own
 > [Your first project](https://kiro.dev/docs/getting-started/first-project/) guide, kept
 > deliberately small. Keep that page open in a tab — it has short video transcripts for each step.
