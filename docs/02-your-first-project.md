@@ -3,8 +3,8 @@
 *Hands-on. This is where you build. You'll take one feature from idea to working code using
 steering → specs → tasks → hooks, with the timeline as your safety net.*
 
-> If you skipped [Session 1](01-getting-started-with-kiro.md), skim its recap table first —
-> this guide assumes you know what steering, specs, and hooks are.
+> If you skipped [Session 1](01-getting-started-with-kiro.md), run through its warm-up tasks first —
+> this guide assumes you've already found the chat, steering, specs, and hooks panels.
 
 ---
 
@@ -49,7 +49,7 @@ mkdir my-kiro-project && cd my-kiro-project
 ## Step 1 — Open your project in Kiro
 
 1. **Open the folder:**
-   - `File > Open Folder` and select your project directory, **or**
+   - click **File > Open Folder** and select your project directory, **or**
    - drag and drop the folder into Kiro, **or**
    - run `kiro .` from inside the folder in your terminal.
 2. **Open the Kiro panel** — click the **Kiro Ghost icon** in the activity bar (left sidebar).
@@ -60,8 +60,8 @@ mkdir my-kiro-project && cd my-kiro-project
 
 ## Step 2 — Set up steering files
 
-Steering files give Kiro context about your project so it stops guessing (see the
-with/without-steering example in [Session 1 §5](01-getting-started-with-kiro.md#steering-in-action--with-vs-without)).
+Steering files give Kiro context about your project so it stops guessing — you got a first taste
+of this in [Session 1, Task 3](01-getting-started-with-kiro.md). Now you'll make them count.
 
 1. In the Kiro panel, choose **Generate Steering Docs**.
 2. Kiro creates files in **`.kiro/steering/`** describing:

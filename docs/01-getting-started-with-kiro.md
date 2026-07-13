@@ -1,249 +1,191 @@
-# Session 1 — Getting Started with Kiro
+# Session 1 — Get Your Feet Wet with Kiro
 
-*The concepts, in the order that makes them click. Read this before you touch the keyboard.*
+*Hands-on. The slides gave you the **why**; this session gets your hands on the tool with a
+series of small, low-stakes tasks. The goal isn't to build anything real yet — it's to learn
+where the buttons are and get comfortable driving Kiro.*
 
-By the end you'll understand **why** Kiro exists, **what** spec-driven development is, and the
-**surfaces** (IDE, CLI) and **building blocks** (steering, specs, hooks, MCP, powers) you'll use
-for the rest of the day.
-
-> 📚 **Official companion:** this session pairs with Kiro's own
-> [Your first project](https://kiro.dev/docs/getting-started/first-project/) guide. Read this for
-> the concepts and *why*; use the official guide (and [Session 2](02-your-first-project.md)) for
-> the click-by-click *how*.
-
----
-
-## 1. The promise of agentic development
-
-AI agents can do more than autocomplete. When you truly work *with* them, you get:
-
-- **Autonomy** — agents take on and complete increasingly challenging tasks on their own.
-- **True collaboration** — developers and agents work together to get more done.
-- **Higher quality** — agents handle the heavy lifting: increasing test coverage, documenting
-  code, optimizing performance, and fixing security vulnerabilities.
-
-That's the upside. But most AI coding tools don't get you there. Why not?
+> 📚 **Official companion:** this session follows the shape of Kiro's own
+> [Your first project](https://kiro.dev/docs/getting-started/first-project/) guide, kept
+> deliberately small. Keep that page open in a tab — it has short video transcripts for each step.
+>
+> When you're comfortable here, [Session 2](02-your-first-project.md) uses these same features to
+> build a real feature end to end.
 
 ---
 
-## 2. The challenges with AI development
+## Before you start
 
-Three things get in the way today:
+Make sure you have:
 
-- **Scaling AI development** — AI coding tools excel at small tasks but *fail on complex projects*.
-- **Limited control** — existing tools make it hard to collaborate with and manage agents.
-- **Code quality** — getting a project from proof-of-concept to production *while maintaining
-  quality* becomes increasingly difficult.
+- **Kiro installed** — see [kiro.dev](https://kiro.dev).
+- **A folder to play in** — any existing project, or a brand-new empty folder. Nothing is
+  precious in this session; we're just poking around.
+- **A terminal** and basic familiarity with your machine.
 
-In short: vibe coding gets you a demo, not a product.
-
----
-
-## 3. The question
-
-> **What would a development experience look like if it could take full advantage of working with AI agents?**
-
-Hold that question. The rest of Kiro is one answer to it.
+> No coding required in this session. If you don't have a project handy, make a scratch one:
+> ```bash
+> mkdir kiro-playground && cd kiro-playground
+> ```
 
 ---
 
-## 4. The solution: spec-driven development
+## Task 1 — Open a project and say hello
 
-> **Vibe coding ships the prototype. Traditional SDLC practices ship the product.**
+**What to do:**
 
-Kiro brings the discipline of the software development lifecycle to AI coding:
+1. **Open your folder** in Kiro — click **File > Open Folder**, or drag-and-drop the folder onto
+   Kiro, or run `kiro .` from inside it in your terminal.
+2. **Open the Kiro panel** — click the **Kiro Ghost icon** 👻 in the activity bar (left sidebar).
+   This panel is home base for every feature you'll touch today.
+3. **Find the chat pane** — it's open by default. This is where you talk to Kiro.
 
-```
-PLANNING & DESIGN → IMPLEMENTATION →  ⟳ (issues found) → TESTING & QA → DEPLOYMENT → MAINTENANCE
-```
+👉 **Try it — your first prompt.** Type this into the chat and send it:
 
-Instead of jumping straight to code (where issues are found late and loop back expensively),
-Kiro turns your prompt into a **spec** — clear requirements, a system design, and discrete tasks —
-*before* implementation starts. Kiro helps developers and engineering teams ship high-quality
-software with AI agents.
+> *"Give me a one-sentence summary of what's in this folder, then suggest three tiny things I
+> could build here for fun."*
 
-You'll build a real spec in [Session 2](02-your-first-project.md).
+Watch how Kiro reads your workspace before answering. Congratulations — you're driving Kiro.
 
----
-
-## 5. Kiro the AI IDE — from prototype to production
-
-The Kiro IDE is where spec-driven development lives. Its core capabilities:
-
-### Spec-driven development
-- Kiro turns your prompt into clear **requirements, system design, and discrete tasks**.
-- You **iterate with Kiro** on the spec and architecture *before* code is written.
-- Kiro agents implement the spec while **keeping you in control**.
-
-### Agent hooks
-- **Delegate tasks to AI agents that trigger on events** — like "on file save."
-- Agents **autonomously execute in the background** based on your pre-defined prompts.
-- Hooks help you **scale your work**: generating documentation, unit tests, or optimizing
-  code performance without manual effort.
-
-### Advanced context management
-Kiro's answer to "the agent doesn't know my project" is context you control:
-
-- **Steering files** — configure how Kiro agents work *per project* (conventions, stack,
-  architecture, preferences). More on why this matters below.
-- **MCP (Model Context Protocol)** — connect Kiro to docs, databases, APIs, and other tools
-  natively (see §6).
-- **Drop in an image** of your UI design, or a photo of an architecture whiteboard session,
-  and Kiro can use it to guide implementation.
-
-### Steering in action — with vs. without
-
-Steering files live in `.kiro/steering/` and are loaded automatically so Kiro shares the
-context an experienced teammate would have. Here's why they matter. Imagine the same prompt:
-
-> *"Add an endpoint to save a new user."*
-
-**Without steering** — Kiro has no project context, so it guesses:
-
-```python
-# Guesses a framework, an ORM, naming, and structure — often the wrong ones.
-@app.route('/api/saveUser', methods=['POST'])   # camelCase route
-def saveUser():
-    conn = sqlite3.connect('db.sqlite')          # raw sqlite3
-    cur = conn.cursor()
-    cur.execute("INSERT INTO users ...")          # inline SQL, no model
-    return {'ok': True}
-```
-
-You now spend time correcting the framework, the naming, the data layer, and where the file
-even goes.
-
-**With steering** — a `tech.md` steering file says *"Flask + SQLAlchemy, snake_case routes,
-models in `app/models/`, blueprints in `app/routes/`"*:
-
-```python
-# app/routes/users.py  — matches your conventions the first time.
-from app.models.user import User
-from app.extensions import db
-from . import users_bp
-
-@users_bp.route('/users', methods=['POST'])       # snake_case, blueprint
-def create_user():
-    user = User(**request.get_json())
-    db.session.add(user)
-    db.session.commit()
-    return jsonify(user.to_dict()), 201
-```
-
-Same prompt, dramatically less rework. **Steering turns "plausible generic code" into "code that
-fits your project."** You'll generate these files in [Session 2](02-your-first-project.md).
-
-### Timeline & checkpointing
-- **Roll back** to earlier points in the execution log.
-- A **safety net** to explore multiple approaches to a problem.
-- Kiro **snapshots the contents of each modified file** and restores that snapshot when you
-  revert to a checkpoint.
+> ✅ **You learned:** how to open a project, where the Kiro panel and chat live, and that Kiro
+> sees your workspace.
 
 ---
 
-## 6. MCP — connecting Kiro to the outside world
+## Task 2 — Make a trivial change, then undo it with the timeline
 
-**Model Context Protocol (MCP)** lets Kiro reach beyond your codebase to:
+Now let Kiro *write* something — and practice rolling back, so you'll never be afraid to
+experiment.
 
-- Access specialized knowledge bases and documentation.
-- Integrate with external APIs and services.
-- Use domain-specific tools and utilities.
-- Connect to databases and cloud services.
+👉 **Try it — ask for a tiny change:**
 
-Kiro ships with a built-in **`fetch`** MCP server (disabled by default — you flip it on).
-You can add any MCP server by asking Kiro or editing a small JSON config, for example:
+> *"Create a file called `HELLO.md` with a friendly one-line greeting and today's date."*
 
-```json
-{
-  "mcpServers": {
-    "web-search": {
-      "command": "uvx",
-      "args": ["mcp-server-brave-search"],
-      "env": { "BRAVE_API_KEY": "your-api-key-here" },
-      "disabled": false,
-      "autoApprove": ["search"]
-    }
-  }
-}
-```
+**What to do:**
 
-Once configured, you use MCP tools by **asking questions** ("search for the latest React 18 best
-practices"), **referencing tools explicitly** (`#[fetch] ...`), or **combining them with hooks
-and specs**. MCP is a *context* capability — you'll see it conceptually here; the day's hands-on
-focus stays on the build loop.
+1. Review the change Kiro proposes and **accept** it. Open `HELLO.md` to confirm it's there.
+2. Find the **timeline / checkpoints** for the session (in the chat/execution view).
+3. **Roll back** to the checkpoint *before* that change and watch `HELLO.md` disappear — Kiro
+   restores the snapshot of your files.
+
+👉 **Try it again — a second approach.** Ask for a *different* version, compare, and keep whichever
+you like:
+
+> *"Actually, make `HELLO.md` an ASCII-art banner of the word HELLO instead."*
+
+> ✅ **You learned:** Kiro proposes → you approve, and the timeline is your safety net for trying
+> multiple approaches without fear.
 
 ---
 
-## 7. Kiro in the terminal — the CLI
+## Task 3 — Generate steering files and add one rule
 
-Kiro is also a CLI (`kiro`), so you can **turn ideas into implementation with speed and
-precision while staying in complete control**. Highlights:
+**Steering files** live in `.kiro/steering/` and give Kiro context about your project so it stops
+guessing. Let's create them and feel the difference.
 
-### Custom agents
-- Optimize Kiro for specific tasks — documentation, code reviews, unit tests.
-- Provide **pre-approved tool permissions, context files, and prompts**.
-- Kiro **builds on your feedback**, delivering smarter defaults while reducing interruptions.
-- Run agents **in parallel with Kiro subagents** — isolated context, independent execution,
-  and task summaries on completion.
+**What to do:**
 
-### Headless execution
-- Run the Kiro CLI **programmatically inside CI/CD pipelines** to ship releases faster.
-- Enable automation by **executing prompts without user input** locally.
-- Authenticate with **API keys, device codes, or PKCE**.
+1. In the Kiro panel, choose **Generate Steering Docs**.
+2. Open the files Kiro creates in **`.kiro/steering/`** — typically **product**, **tech**, and
+   **structure**. Skim them. On a fresh folder they'll be sparse; that's fine.
+3. Click the **`+`** in the steering section to add a **custom** steering file. Paste something
+   small and opinionated:
 
----
+   ```markdown
+   # Coding Standards
+   - Prefer clear names over clever ones.
+   - Keep functions short.
+   - Add a matching test file for every module.
+   ```
 
-## 8. Power, flexibility, and security
+👉 **Try it — feel the difference.** Ask Kiro the same kind of question and notice it now respects
+your file:
 
-Kiro is built to be adopted by real teams:
+> *"Add a tiny example module for this project — follow my coding standards."*
 
-- **Familiar environments** — Kiro imports your VS Code settings into a streamlined,
-  AI-ready environment, and is available in the terminal for macOS, Linux, and Windows.
-- **Cutting-edge models** — access frontier and open-weight AI models. Pick the right one
-  for the job, or let Kiro decide by selecting **Auto**.
-- **Enterprise-grade security** — built and operated following the same security, governance,
-  and encryption standards as the AWS cloud infrastructure.
+Kiro should honor the naming and the "matching test file" rule you just wrote. That's steering:
+turning generic output into output that fits *your* project.
 
----
-
-## 9. Kiro powers — sharable best practices
-
-**Powers extend Kiro agent capabilities through sharable best practices.**
-
-A **Kiro power** is a bundle of sharable knowledge and best practices that may contain:
-- **MCP servers** for access,
-- **Steering files** for context,
-- **Hooks** for actions.
-
-Powers flow from **use cases** (ISV use cases, expert use cases) into reusable powers, and out
-to the **community** via a community exchange.
-
-### Benefits
-- **Targeted context for fast decisions** — dynamic loading to avoid context overload,
-  one-click download for IDE use, and the option to customize a power.
-- **Knowledge from ISVs and experts** — best practices from ISVs for dev tools, opinionated
-  guidance from experts, and a mechanism to share powers with the community.
-- **Dev-to-deployment use cases** — application development spanning full-stack use cases,
-  automated code build and deployment, and observability on application performance and security.
-
-### Partners (examples)
-Powers span the whole stack: **Figma** (UI), **Supabase** (backend), **Stripe** (full-stack),
-**Postman** (API), **Strands Agents SDK** (agent dev), **Neon** (databases),
-**Netlify / HashiCorp / AgentCore** (deployment), and **Datadog / Dynatrace** (observability).
+> ✅ **You learned:** how to generate steering docs, add a custom rule, and see Kiro follow it.
+> [Session 2](02-your-first-project.md) puts steering to work on a real feature.
 
 ---
 
-## Recap — the vocabulary you now own
+## Task 4 — Peek at a spec (don't build it yet)
 
-| Term | One-liner |
-|------|-----------|
-| **Spec-driven development** | Turn a prompt into requirements → design → tasks *before* coding. |
-| **Steering files** | Per-project context that guides how Kiro behaves (`.kiro/steering/`). |
-| **Specs** | Structured requirements, design, and tasks for a feature (`.kiro/specs/`). |
-| **Agent hooks** | Automations that trigger on events (e.g., file save) or manually. |
-| **MCP** | Model Context Protocol — connect Kiro to docs, APIs, databases, and tools. |
-| **Timeline / checkpointing** | Snapshot-and-rollback safety net for exploring changes. |
-| **Custom agents** | Task-specialized agents with pre-approved tools and context (CLI). |
-| **Powers** | Sharable bundles of MCP + steering + hooks. |
+**Specs** turn an idea into a plan in three phases: **Requirements → Design → Tasks**. Here you'll
+just *create one and look* — you'll actually execute a spec in Session 2.
 
-**Next:** [Session 2 — Your first project →](02-your-first-project.md)
+**What to do:**
+
+1. Click the **Spec** button in chat, or the **`+`** in the panel's **Specs** section.
+2. Describe something tiny in plain language, for example:
+
+   > *"Add a command that prints a random motivational quote."*
+
+3. Walk through the **Requirements** phase and read what Kiro produces — note the structured,
+   testable acceptance criteria (EARS notation). Peek at the **Design** and **Tasks** it drafts.
+
+You don't have to run the tasks now. The point is to *see* how a one-line idea becomes a
+reviewable plan.
+
+> ✅ **You learned:** where specs live and what the three phases look like — the core of
+> spec-driven development you'll use for real next session.
+
+---
+
+## Task 5 — Turn on an MCP server and use it
+
+**MCP (Model Context Protocol)** connects Kiro to outside tools and data. Kiro ships with a
+built-in **`fetch`** server — let's switch it on. No API key needed.
+
+**What to do:**
+
+1. In the Kiro panel, **enable MCP**, then click the **edit (pencil) icon** next to MCP to open
+   its JSON config.
+2. Find the built-in **`fetch`** server and set **`"disabled": false`**, then save.
+
+👉 **Try it — ask something that needs the web:**
+
+> *"#[fetch] Fetch the Kiro docs homepage at https://kiro.dev/docs and summarize what's there."*
+
+Notice Kiro reaching out through the `fetch` tool to get real content. (Adding other servers — like
+web search — just means another entry in that JSON, e.g. `command`, `args`, and an API key in
+`env`.)
+
+> ✅ **You learned:** how to enable an MCP server and invoke a tool with `#[...]`. MCP is how Kiro
+> reaches docs, APIs, and databases.
+
+---
+
+## Task 6 — Look around: Hooks and Powers
+
+Two more panels worth a 2-minute look so you know they exist.
+
+**Agent Hooks** — automations that run on events (file saved/created/deleted, or a manual trigger).
+
+👉 **Try it — create a manual hook:** open the **Agent Hooks** section, click **`+`**, choose a
+**manual trigger**, and give it an instruction like *"Summarize what changed in this project since
+I started."* Save it, then run it from the panel and watch it fire. (Session 2 wires a hook to
+**file save** for real.)
+
+**Powers** — downloadable bundles of best practices (MCP servers + steering + hooks) from experts
+and partners.
+
+👉 **Try it — browse Powers:** open the **Powers** section and skim what's available. Notice how a
+single power can bundle context and actions you'd otherwise set up by hand.
+
+> ✅ **You learned:** hooks automate chores on triggers; powers package best practices you can pull
+> in with a click.
+
+---
+
+## You're warmed up
+
+In a few small tasks you've driven every core surface of Kiro:
+
+**chat → approve/rollback (timeline) → steering → specs → MCP → hooks & powers.**
+
+You didn't build a product — you got the feel of the platform. Now do it for real.
+
+**Next:** [Session 2 — Your first project →](02-your-first-project.md) — take one feature from
+idea to working code using the full build loop.
